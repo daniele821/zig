@@ -19,5 +19,5 @@ pub fn main() !void {
         xi = iterBbs(number, n, xi);
         try pseudoRandomness.append('0' + @as(u8, @truncate(xi & 1)));
     }
-    std.debug.print("RESULT: {s}", .{pseudoRandomness.items});
+    std.debug.print("RESULT: {s}\n", .{pseudoRandomness.items});
 }
