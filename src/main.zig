@@ -40,3 +40,25 @@ fn gcd(x: u64, y: u64) u64 {
     if (y == 0) return x;
     return gcd(y, x % y);
 }
+
+fn primeFactors(allocator: std.mem.Allocator, n: u64) ![]struct { u64, u64 } {
+    var factors = std.ArrayList(struct { u64, u64 }).init(allocator);
+    defer factors.deinit();
+
+    var num = n;
+    var factor: u64 = 2;
+
+    while (num > 1) {
+        var exponent: u64 = 0;
+        while (num % factor == 0) {
+            num /= factor;
+            exponent += 1;
+        }
+        if (exponent > 0) {
+            try factors.append(.{ factor, exponent });
+        }
+        factor += 1;
+    }
+
+    return factors.toOwnedSlice();
+}
