@@ -15,12 +15,11 @@ const PowerIterator = struct {
 };
 
 pub fn main() !void {
-    var iter = PowerIterator{ .step = 3 };
-    while (iter.next()) |i| {
-        const index: u64 = i;
+    const values = [_]u64{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+    for (values) |index| {
         std.debug.print("{:>2}: ", .{index});
-        const euler_number = euler(index, false);
-        std.debug.print("{}\n", .{euler_number});
+        const euler_number = euler(index, true);
+        std.debug.print(" | {}\n", .{euler_number});
     }
 }
 
@@ -28,7 +27,7 @@ fn euler(x: u64, print: bool) u64 {
     var count: u64 = 0;
     for (1..@max(1, x)) |i| {
         if (gcd(i, x) == 1) {
-            if (print) std.debug.print("{:2} ", .{i});
+            if (print) std.debug.print("{},", .{i});
             count += 1;
         }
     }
