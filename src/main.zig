@@ -1,4 +1,5 @@
 const std = @import("std");
+const zigaes = @import("zigaes");
 
 const PowerIterator = struct {
     current: u64 = 1,
@@ -15,6 +16,7 @@ const PowerIterator = struct {
 };
 
 pub fn main() !void {
+    try zigaes.main();
     const values = [_]u64{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
     for (values) |index| {
         std.debug.print("{:>2}: ", .{index});
