@@ -8,6 +8,9 @@ pub fn build(b: *std.Build) void {
         .optimize = b.standardOptimizeOption(.{}),
     });
 
+    const zigaes = b.dependency("zigaes", .{}).module("zigaes");
+    exe.root_module.addImport("zigaes", zigaes);
+
     b.installArtifact(exe);
 
     const run_exe = b.addRunArtifact(exe);
