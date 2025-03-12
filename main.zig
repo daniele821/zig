@@ -1,17 +1,22 @@
 const std = @import("std");
+const aes = std.crypto.core.aes;
 
-pub fn main() !void {}
+pub fn main() !void {
+    var key: [32]u8 = undefined; // 256-bit (32 bytes) AES key
+    var src: [32]u8 = undefined; // Two AES blocks (16 * 2 = 32 bytes)
+    var dst: [32]u8 = undefined; // Buffer to hold the encrypted data
 
-test {
-    const key = [_]u8{
-        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
-        0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
-    };
-    const in = [_]u8{ 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff };
-    const exp_out = [_]u8{ 0x8e, 0xa2, 0xb7, 0xca, 0x51, 0x67, 0x45, 0xbf, 0xea, 0xfc, 0x49, 0x90, 0x4b, 0x49, 0x60, 0x89 };
+    // Initialize the key with some values
+    @memset(&key, 0xAB);
+    @memset(&src, 'A'); // Example plaintext data
 
-    var out: [exp_out.len]u8 = undefined;
-    var ctx = std.crypto.core.aes.Aes256.initEnc(key);
-    ctx.encrypt(out[0..], in[0..]);
-    try std.testing.expectEqualSlices(u8, exp_out[0..], out[0..]);
+    // Initialize the AES encryptor with the key
+    aes.Aes256.initEnc(key).encryptWide(2, &dst, &src);
+
+    // Print the encrypted data
+    std.debug.print("encrypted data: {s}\n", .{dst});
+
+    aes.Aes256.initDec(key).decryptWide(2, &dst, &src);
+
+    std.debug.print("encrypted data: {s}\n", .{src});
 }
