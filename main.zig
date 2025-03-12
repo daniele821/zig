@@ -1,45 +1,17 @@
 const std = @import("std");
 
-pub fn main() !void {
-    const allocator = std.heap.page_allocator;
+pub fn main() !void {}
 
-    // Command to run
-    const argv = [_][]const u8{ "ls", "-l" };
+test {
+    const key = [_]u8{
+        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+        0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
+    };
+    const in = [_]u8{ 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff };
+    const exp_out = [_]u8{ 0x8e, 0xa2, 0xb7, 0xca, 0x51, 0x67, 0x45, 0xbf, 0xea, 0xfc, 0x49, 0x90, 0x4b, 0x49, 0x60, 0x89 };
 
-    // Spawn the child process
-    var child = std.process.Child.init(argv[0..], allocator);
-
-    // Capture stdout and stderr
-    child.stdout_behavior = .Pipe;
-    child.stderr_behavior = .Pipe;
-
-    try child.spawn();
-
-    // Read the output
-    const stdout = try child.stdout.?.reader().readAllAlloc(allocator, std.math.maxInt(usize));
-    defer allocator.free(stdout);
-
-    const stderr = try child.stderr.?.reader().readAllAlloc(allocator, std.math.maxInt(usize));
-    defer allocator.free(stderr);
-
-    // Wait for the child process to finish
-    const term = try child.wait();
-
-    // Check the exit status
-    switch (term) {
-        .Exited => |code| {
-            if (code != 0) {
-                std.debug.print("Command failed with exit code {}\n", .{code});
-                std.debug.print("Stderr: {s}\n", .{stderr});
-                return error.CommandFailed;
-            }
-        },
-        else => {
-            std.debug.print("Command terminated abnormally\n", .{});
-            return error.CommandFailed;
-        },
-    }
-
-    // Print the output
-    std.debug.print("Stdout: {s}\n", .{stdout});
+    var out: [exp_out.len]u8 = undefined;
+    var ctx = std.crypto.core.aes.Aes256.initEnc(key);
+    ctx.encrypt(out[0..], in[0..]);
+    try std.testing.expectEqualSlices(u8, exp_out[0..], out[0..]);
 }
