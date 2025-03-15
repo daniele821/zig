@@ -10,7 +10,7 @@ pub fn build(b: *std.Build) void {
 
     const zigaes = b.dependency("zigaes", .{}).module("zigaes");
     exe.root_module.addImport("zigaes", zigaes);
-
+    exe.linkSystemLibrary("c");
     b.installArtifact(exe);
 
     const run_exe = b.addRunArtifact(exe);

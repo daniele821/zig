@@ -1,20 +1,22 @@
 const std = @import("std");
+const c = @cImport({
+    @cInclude("time.h");
+});
 
-pub fn main() !void {}
+pub fn main() !void {
+    var rawtime: c.time_t = undefined;
+    var timeinfo: *c.tm = undefined;
+    var buffer: [20]u8 = undefined;
 
-test "json parse" {
-    const Place = struct { lat: f32, long: f32 };
-    const parsed = try std.json.parseFromSlice(
-        Place,
-        std.testing.allocator,
-        \\{ "lat": 40.684540, "long": -74.401422 }
-    ,
-        .{},
-    );
-    defer parsed.deinit();
+    // Get the current time in Unix seconds
+    _ = c.time(&rawtime);
 
-    const place = parsed.value;
+    // Convert to local time
+    timeinfo = c.localtime(&rawtime);
 
-    try std.testing.expect(place.lat == 40.684540);
-    try std.testing.expect(place.long == -74.401422);
+    // Format the time as "dd/mm/yy hh:mm:ss"
+    _ = c.strftime(&buffer, buffer.len, "%d/%m/%y %H:%M:%S", timeinfo);
+
+    // Print the formatted time
+    try std.io.getStdOut().writer().print("Formatted Time: {s}\n", .{buffer});
 }
