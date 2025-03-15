@@ -3,7 +3,7 @@ const aes = std.crypto.core.aes;
 
 pub fn main() !void {
     const time = std.time.timestamp();
-    const epoch_seconds = std.time.epoch.EpochSeconds{ .secs = @bitCast(time) };
+    const epoch_seconds = std.time.epoch.EpochSeconds{ .secs = @intCast(time) };
     const epoch_day = epoch_seconds.getEpochDay();
     const day_seconds = epoch_seconds.getDaySeconds();
     const year_day = epoch_day.calculateYearDay();
