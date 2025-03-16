@@ -10,6 +10,8 @@ pub fn build(b: *std.Build) void {
 
     const zigaes = b.dependency("zigaes", .{}).module("zigaes");
     exe.root_module.addImport("zigaes", zigaes);
+    const zeit = b.dependency("zeit", .{}).module("zeit");
+    exe.root_module.addImport("zeit", zeit);
     exe.linkSystemLibrary("c");
     b.installArtifact(exe);
 
