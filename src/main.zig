@@ -67,7 +67,7 @@ fn WriterGeneric(T: type) type {
         vtable: *const Vtable,
 
         pub const Vtable = struct {
-            testing: *const fn (ptr: *@This()) void,
+            testing: *const fn (ptr: *WriterGeneric(T)) void,
         };
     };
 }
@@ -75,7 +75,7 @@ fn WriterGeneric(T: type) type {
 const File2 = struct {
     id: i32,
 
-    fn testing(self: *File2) void {
+    fn testing(self: *WriterGeneric(File2)) void {
         _ = self;
     }
 
@@ -92,5 +92,6 @@ pub fn main() !void {
     try file.writer().writeAll("TESTING");
     try file.writer().vtable.writeAll(&file, "TESTING");
     var file2 = File2{ .id = 12 };
-    try file2.writerGeneric().vtable.testing();
+    var writergeneric = file2.writerGeneric();
+    file2.writerGeneric().vtable.testing(&writergeneric);
 }
