@@ -2,20 +2,7 @@
     .name = .zig,
     .version = "0.0.0",
 
-    .dependencies = .{
-        .zigaes = .{
-            .url = "https://github.com/irealycode/zigaes/archive/refs/tags/v0.1.0.tar.gz",
-            .hash = "1220f22ecb4f5109d897a21423e842412ca716c784bcc62752c3d7998c5ea476dbeb",
-        },
-        .zeit = .{
-            .url = "git+https://github.com/rockorager/zeit#44bebf856693332b168d8ba2c45b9d1ec15511de",
-            .hash = "zeit-0.0.0-5I6bk_pZAgB03N1p1GmVOZ--gOFwwQSRKj1UXb5tnaKS",
-        },
-        .zdt = .{
-            .url = "git+https://github.com/FObersteiner/zdt#b2f09b95ae98f77ba656f458024de5b535dd0fd2",
-            .hash = "zdt-0.6.0-xr0_vHS1EABDzhF4_j7ksJ4JCz4Zf0WpMddowppGvVT5",
-        },
-    },
+    .dependencies = .{},
     .fingerprint = 0xc1ce10812634c187,
     .paths = .{
         "build.zig",

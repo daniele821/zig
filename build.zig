@@ -8,13 +8,6 @@ pub fn build(b: *std.Build) void {
         .optimize = b.standardOptimizeOption(.{}),
     });
 
-    const zigaes = b.dependency("zigaes", .{}).module("zigaes");
-    exe.root_module.addImport("zigaes", zigaes);
-    const zeit = b.dependency("zeit", .{}).module("zeit");
-    exe.root_module.addImport("zeit", zeit);
-    const zdt = b.dependency("zdt", .{}).module("zdt");
-    exe.root_module.addImport("zdt", zdt);
-    exe.linkSystemLibrary("c");
     b.installArtifact(exe);
     const run_exe = b.addRunArtifact(exe);
 

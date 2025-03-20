@@ -1,5 +1,4 @@
 const std = @import("std");
-const zeit = @import("zeit");
 
 // TAGGED ENUM DYNAMIC DISPATCH (limits allowed implementations + requires extra space to choose)
 const Animal = union(enum) {
@@ -59,8 +58,38 @@ const File = struct {
         };
     }
 };
+
+// TESTING: GENERIC VTABLE DYNAMICALLY DISPATCHED INTERFACE
+
+fn WriterGeneric(T: type) type {
+    return struct {
+        ptr: *T,
+        vtable: *const Vtable,
+
+        pub const Vtable = struct {
+            testing: *const fn (ptr: *T) void,
+        };
+    };
+}
+
+const File2 = struct {
+    id: i32,
+
+    fn testing(self: *File2) void {
+        _ = self;
+    }
+
+    fn writerGeneric(self: *File2) WriterGeneric(File2) {
+        return WriterGeneric(File2){
+            .ptr = self,
+            .vtable = &.{ .testing = testing },
+        };
+    }
+};
+
 pub fn main() !void {
     var file = File{ .id = 69 };
     try file.writer().writeAll("TESTING");
     try file.writer().vtable.writeAll(&file, "TESTING");
+    _ = File2{ .id = 12 };
 }
