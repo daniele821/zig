@@ -3,10 +3,14 @@ const zeit = @import("zeit");
 
 const Writer = struct {
     ptr: *anyopaque,
-    writeAllFn: *const fn (ptr: *anyopaque, data: []const u8) anyerror!void,
+    vtable: *const Vtable,
+
+    pub const Vtable = struct {
+        writeAll: *const fn (ptr: *anyopaque, data: []const u8) anyerror!void,
+    };
 
     fn writeAll(self: Writer, data: []const u8) !void {
-        return self.writeAllFn(self.ptr, data);
+        return self.vtable.writeAll(self.ptr, data);
     }
 };
 
@@ -20,14 +24,15 @@ const File = struct {
 
     fn writer(self: *File) Writer {
         return .{
-            // this "erases" the type: *File -> *anyopaque
             .ptr = self,
-            .writeAllFn = writeAll,
+            .vtable = &Writer.Vtable{
+                .writeAll = writeAll,
+            },
         };
     }
 };
 pub fn main() !void {
     var file = File{ .id = 69 };
     try file.writer().writeAll("TESTING");
-    try file.writer().writeAllFn(&file, "TESTING");
+    try file.writer().vtable.writeAll(&file, "TESTING");
 }
