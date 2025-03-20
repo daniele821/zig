@@ -28,5 +28,6 @@ const File = struct {
 };
 pub fn main() !void {
     var file = File{ .id = 69 };
-    try file.writer().writeAll("HI THERE!\n");
+    try file.writer().writeAll("TESTING");
+    try file.writer().writeAllFn(&file, "TESTING");
 }
